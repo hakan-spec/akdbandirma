@@ -15,33 +15,37 @@ const languageOptions = [
   'Sınav Hazırlık'
 ];
 
+const primaryLevels = [
+  { value: 'starter2', label: 'Starter 2' },
+  { value: 'starter3', label: 'Starter 3' },
+  { value: 'starter4', label: 'Starter 4' },
+  { value: 'level5', label: 'Level 5' },
+  { value: 'level6', label: 'Level 6' },
+  { value: 'level7', label: 'Level 7' },
+  { value: 'level8', label: 'Level 8' }
+];
+
+const adultLevels = [
+  { value: 'A1.1', label: 'A1.1' },
+  { value: 'A1.2', label: 'A1.2' },
+  { value: 'A2.1', label: 'A2.1' },
+  { value: 'A2.2', label: 'A2.2' },
+  { value: 'B1.1', label: 'B1.1' },
+  { value: 'B1.2', label: 'B1.2' },
+  { value: 'B2.1', label: 'B2.1' },
+  { value: 'B2.2', label: 'B2.2' },
+  { value: 'C1.1', label: 'C1.1' },
+  { value: 'C1.2', label: 'C1.2' }
+];
+
 const getLevelOptions = (educationLevel: EducationLevel): { value: LanguageLevel; label: string }[] => {
   switch (educationLevel) {
     case 'ilkogretim':
-      return [
-        { value: 'starter2', label: 'Starter 2' },
-        { value: 'starter3', label: 'Starter 3' },
-        { value: 'starter4', label: 'Starter 4' },
-        { value: 'level5', label: 'Level 5' },
-        { value: 'level6', label: 'Level 6' },
-        { value: 'level7', label: 'Level 7' },
-        { value: 'level8', label: 'Level 8' }
-      ];
+      return [...primaryLevels, ...adultLevels];
     case 'lise':
     case 'universite':
     case 'yetiskin':
-      return [
-        { value: 'A1.1', label: 'A1.1' },
-        { value: 'A1.2', label: 'A1.2' },
-        { value: 'A2.1', label: 'A2.1' },
-        { value: 'A2.2', label: 'A2.2' },
-        { value: 'B1.1', label: 'B1.1' },
-        { value: 'B1.2', label: 'B1.2' },
-        { value: 'B2.1', label: 'B2.1' },
-        { value: 'B2.2', label: 'B2.2' },
-        { value: 'C1.1', label: 'C1.1' },
-        { value: 'C1.2', label: 'C1.2' }
-      ];
+      return adultLevels;
     default:
       return [];
   }
