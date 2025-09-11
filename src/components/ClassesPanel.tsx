@@ -133,18 +133,26 @@ const ClassesPanel: React.FC<ClassesPanelProps> = ({ onBack, onViewClassDetails,
   };
 
   const handleDeleteClass = async (classId: string) => {
+    console.log('DEBUG: handleDeleteClass called with classId:', classId);
     if (!confirm('Bu sınıfı silmek istediğinizden emin misiniz? Sınıftaki öğrenciler sınıfsız kalacaktır.')) {
+      console.log('DEBUG: User cancelled deletion');
       return;
     }
 
     try {
+      console.log('DEBUG: Starting class deletion process for classId:', classId);
       setActionLoading(true);
+      console.log('DEBUG: Calling classService.deleteClass...');
       await classService.deleteClass(classId);
+      console.log('DEBUG: Class deletion successful, reloading data...');
       await loadData();
+      console.log('DEBUG: Data reloaded successfully');
     } catch (err) {
       console.error('Error deleting class:', err);
+      console.error('DEBUG: Full error object:', JSON.stringify(err, null, 2));
       setError('Sınıf silinirken hata oluştu.');
     } finally {
+      console.log('DEBUG: Setting actionLoading to false');
       setActionLoading(false);
     }
   };

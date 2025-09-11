@@ -111,14 +111,39 @@ export const classService = {
 
   // Sınıfı sil
   async deleteClass(id: string): Promise<void> {
+    console.log('DEBUG: classService.deleteClass called with id:', id);
+    
+    // First check if the class exists
+    const { data: existingClass, error: checkError } = await supabase
+      .from('classes')
+      .select('id, name')
+      .eq('id', id)
+      .single();
+    
+    if (checkError) {
+      console.error('DEBUG: Error checking if class exists:', checkError);
+      if (checkError.code === 'PGRST116') {
+        console.log('DEBUG: Class not found during check');
+        throw new Error('CLASS_NOT_FOUND');
+      }
+      throw checkError;
+    }
+    
+    console.log('DEBUG: Class exists, proceeding with deletion:', existingClass);
+    
     const { error } = await supabase
       .from('classes')
       .delete()
       .eq('id', id);
 
     if (error) {
+      console.error('DEBUG: Error during class deletion:', error);
+      console.error('DEBUG: Error code:', error.code);
+      console.error('DEBUG: Error message:', error.message);
       console.error('Error deleting class:', error);
       throw error;
+    } else {
+      console.log('DEBUG: Class deletion completed successfully');
     }
   },
 
