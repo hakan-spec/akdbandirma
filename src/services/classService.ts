@@ -47,7 +47,6 @@ export const classService = {
     const { data, error } = await supabase
       .from('classes')
       .insert({
-        user_id: user.id,
         name: name.trim(),
         level: level,
         start_date: startDate || null, // Yeni eklendi
