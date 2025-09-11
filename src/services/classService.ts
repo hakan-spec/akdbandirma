@@ -95,18 +95,19 @@ export const classService = {
         *,
         teachers!classes_teacher_id_fkey(name)
       `)
-      .single();
+      .limit(1);
 
     if (error) {
-      // Handle case where class is not found (might have been deleted)
-      if (error.code === 'PGRST116') {
-        throw new Error('CLASS_NOT_FOUND');
-      }
       console.error('Error updating class:', error);
       throw error;
     }
 
-    return transformClassRow(data);
+    // Check if any data was returned
+    if (!data || data.length === 0) {
+      throw new Error('CLASS_NOT_FOUND');
+    }
+
+    return transformClassRow(data[0]);
   },
 
   // Sınıfı sil
