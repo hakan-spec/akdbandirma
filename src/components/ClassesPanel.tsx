@@ -118,8 +118,15 @@ const ClassesPanel: React.FC<ClassesPanelProps> = ({ onBack, onViewClassDetails,
       setCurrentView('list');
       setSelectedClass(null);
     } catch (err) {
-      console.error('Error updating class:', err);
-      setError('Sınıf güncellenirken hata oluştu.');
+      if (err instanceof Error && err.message === 'CLASS_NOT_FOUND') {
+        setError('Sınıf bulunamadı. Başka bir kullanıcı tarafından silinmiş olabilir.');
+        await loadData(); // Reload data to update UI
+        setCurrentView('list');
+        setSelectedClass(null);
+      } else {
+        console.error('Error updating class:', err);
+        setError('Sınıf güncellenirken hata oluştu.');
+      }
     } finally {
       setActionLoading(false);
     }
