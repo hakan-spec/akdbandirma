@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface AuthContextType {
   user: User | null;
@@ -29,11 +29,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        // Clear invalid tokens on initialization
+        const clearInvalidTokens = () => {
+          localStorage.removeItem('sb-' + import.meta.env.VITE_SUPABASE_URL?.split('//')[1]?.split('.')[0] + '-auth-token');
+          sessionStorage.removeItem('sb-' + import.meta.env.VITE_SUPABASE_URL?.split('//')[1]?.split('.')[0] + '-auth-token');
+        };
+
         // Get initial session
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
           console.error('Auth session error:', error);
-          setError('Kimlik doğrulama hatası: ' + error.message);
+          // If refresh token error, clear storage and retry
+          if (error.message.includes('refresh_token_not_found') || error.message.includes('Invalid Refresh Token')) {
+            clearInvalidTokens();
+            // Try to get session again after clearing tokens
+            const { data: { session: retrySession }, error: retryError } = await supabase.auth.getSession();
+            if (retryError) {
+              console.error('Auth retry error:', retryError);
+              setError('Kimlik doğrulama hatası: ' + retryError.message);
+            } else {
+              setSession(retrySession);
+              setUser(retrySession?.user ?? null);
+            }
+          } else {
+            setError('Kimlik doğrulama hatası: ' + error.message);
+          }
         } else {
           setSession(session);
           setUser(session?.user ?? null);
@@ -64,21 +84,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     try {
       // Check if Supabase is properly configured
-      if (!supabase.supabaseUrl || !supabase.supabaseKey) {
+      if (!isSupabaseConfigured()) {
         return { error: { message: 'Supabase yapılandırması eksik. Lütfen .env dosyasını kontrol edin.' } };
       }
 
-      // Additional validation for URL format
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      
-      if (!supabaseUrl || !supabaseKey) {
-        return { error: { message: 'VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY .env dosyasında tanımlanmalı.' } };
-      }
-      
-      if (!supabaseUrl.includes('supabase.co') && !supabaseUrl.includes('localhost')) {
-        return { error: { message: 'Geçersiz Supabase URL. URL https://your-project.supabase.co formatında olmalı.' } };
-      }
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
