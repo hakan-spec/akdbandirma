@@ -105,6 +105,12 @@ export const classService = {
 
     if (error) {
       console.error('Error updating class:', error);
+      
+      // Handle specific case where class doesn't exist
+      if (error.code === 'PGRST116' && error.details === 'The result contains 0 rows') {
+        throw new Error('CLASS_NOT_FOUND');
+      }
+      
       throw error;
     }
 
