@@ -82,10 +82,14 @@ const ClassesPanel: React.FC<ClassesPanelProps> = ({ onBack, onViewClassDetails,
       setError(null);
       
       const classesData = await classService.getAllClasses();
+      console.log('DEBUG: loadData - Fetched classesData from Supabase:', classesData);
+      console.log('DEBUG: loadData - Number of classes fetched:', classesData.length);
+      console.log('DEBUG: loadData - Class IDs in fetched data:', classesData.map(c => c.id));
       const studentsData = await studentService.getAllStudents();
       const teachersData = await teacherService.getAllTeachers();
       setClasses(classesData);
       setFilteredClasses(classesData);
+      console.log('DEBUG: loadData - Classes state updated, new length:', classesData.length);
       setStudents(studentsData);
       setAllTeachers(teachersData);
     } catch (err) {
