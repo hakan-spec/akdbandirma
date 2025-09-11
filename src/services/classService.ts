@@ -98,25 +98,27 @@ export const classService = {
         *,
         teachers!classes_teacher_id_fkey(name)
       `)
-      .limit(1);
+      .single();
 
     console.log('DEBUG: updateClass - Supabase response data:', data);
     console.log('DEBUG: updateClass - Supabase response error:', error);
-    console.log('DEBUG: updateClass - Data length:', data?.length);
 
     if (error) {
+      if (error.code === 'PGRST116') {
+        console.log('DEBUG: updateClass - Class not found (PGRST116), throwing CLASS_NOT_FOUND');
+        throw new Error('CLASS_NOT_FOUND');
+      }
       console.error('Error updating class:', error);
       throw error;
     }
 
-    // Check if any data was returned
-    if (!data || data.length === 0) {
+    if (!data) {
       console.log('DEBUG: updateClass - No data returned, throwing CLASS_NOT_FOUND');
       throw new Error('CLASS_NOT_FOUND');
     }
 
-    console.log('DEBUG: updateClass - Returning transformed class data:', transformClassRow(data[0]));
-    return transformClassRow(data[0]);
+    console.log('DEBUG: updateClass - Returning transformed class data:', transformClassRow(data));
+    return transformClassRow(data);
   },
 
   // Sınıfı sil
