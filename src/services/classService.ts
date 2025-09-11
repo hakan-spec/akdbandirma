@@ -14,6 +14,8 @@ const transformClassRow = (row: any): Class => ({
   days: row.days || [], // Yeni eklendi
   timeRange: row.time_range || '', // Yeni eklendi
   tags: row.tags || [], // Yeni eklendi
+  teacherId: row.teacher_id,
+  teacherName: row.teachers?.name || undefined
 });
 
 export const classService = {
@@ -21,7 +23,10 @@ export const classService = {
   async getAllClasses(): Promise<Class[]> {
     const { data: classesData, error: classesError } = await supabase
       .from('classes')
-      .select('*')
+      .select(`
+        *,
+        teachers(name)
+      `)
       .order('created_at', { ascending: false });
 
     if (classesError) {
@@ -33,7 +38,7 @@ export const classService = {
   },
 
   // Yeni sınıf ekle
-  async addClass(name: string, level: LanguageLevel, startDate?: string, endDate?: string, days?: string[], timeRange?: string, tags?: string[]): Promise<Class> {
+  async addClass(name: string, level: LanguageLevel, startDate?: string, endDate?: string, days?: string[], timeRange?: string, tags?: string[], teacherId?: string | null): Promise<Class> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       throw new Error('User not authenticated');
@@ -50,8 +55,12 @@ export const classService = {
         days: days || [], // Yeni eklendi
         time_range: timeRange || '', // Yeni eklendi
         tags: tags || [], // Yeni eklendi
+        teacher_id: teacherId || null
       })
-      .select('*')
+      .select(`
+        *,
+        teachers(name)
+      `)
       .single();
 
     if (error) {
@@ -63,7 +72,7 @@ export const classService = {
   },
 
   // Sınıfı güncelle
-  async updateClass(id: string, name: string, level: LanguageLevel, startDate?: string, endDate?: string, days?: string[], timeRange?: string, tags?: string[]): Promise<Class> {
+  async updateClass(id: string, name: string, level: LanguageLevel, startDate?: string, endDate?: string, days?: string[], timeRange?: string, tags?: string[], teacherId?: string | null): Promise<Class> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       throw new Error('User not authenticated');
@@ -79,9 +88,13 @@ export const classService = {
         days: days || [], // Yeni eklendi
         time_range: timeRange || '', // Yeni eklendi
         tags: tags || [], // Yeni eklendi
+        teacher_id: teacherId || null
       })
       .eq('id', id)
-      .select('*')
+      .select(`
+        *,
+        teachers(name)
+      `)
       .single();
 
     if (error) {
