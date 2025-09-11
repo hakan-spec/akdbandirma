@@ -73,6 +73,9 @@ export const classService = {
 
   // Sınıfı güncelle
   async updateClass(id: string, name: string, level: LanguageLevel, startDate?: string, endDate?: string, days?: string[], timeRange?: string, tags?: string[], teacherId?: string | null): Promise<Class> {
+    console.log('DEBUG: updateClass called with id:', id);
+    console.log('DEBUG: updateClass parameters:', { name, level, startDate, endDate, days, timeRange, tags, teacherId });
+    
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       throw new Error('User not authenticated');
@@ -97,6 +100,10 @@ export const classService = {
       `)
       .limit(1);
 
+    console.log('DEBUG: updateClass - Supabase response data:', data);
+    console.log('DEBUG: updateClass - Supabase response error:', error);
+    console.log('DEBUG: updateClass - Data length:', data?.length);
+
     if (error) {
       console.error('Error updating class:', error);
       throw error;
@@ -104,9 +111,11 @@ export const classService = {
 
     // Check if any data was returned
     if (!data || data.length === 0) {
+      console.log('DEBUG: updateClass - No data returned, throwing CLASS_NOT_FOUND');
       throw new Error('CLASS_NOT_FOUND');
     }
 
+    console.log('DEBUG: updateClass - Returning transformed class data:', transformClassRow(data[0]));
     return transformClassRow(data[0]);
   },
 

@@ -115,14 +115,23 @@ const ClassesPanel: React.FC<ClassesPanelProps> = ({ onBack, onViewClassDetails,
   };
 
   const handleUpdateClass = async (id: string, name: string, level: any, startDate?: string, endDate?: string, days?: string[], timeRange?: string, tags?: string[], teacherId?: string | null) => {
+    console.log('DEBUG: handleUpdateClass called with id:', id);
+    console.log('DEBUG: handleUpdateClass parameters:', { name, level, startDate, endDate, days, timeRange, tags, teacherId });
+    
     try {
       setActionLoading(true);
+      console.log('DEBUG: handleUpdateClass - About to call classService.updateClass');
       await classService.updateClass(id, name, level, startDate, endDate, days, timeRange, tags, teacherId);
+      console.log('DEBUG: handleUpdateClass - classService.updateClass completed successfully');
+      console.log('DEBUG: handleUpdateClass - About to reload data');
       await loadData();
+      console.log('DEBUG: handleUpdateClass - Data reloaded successfully');
       setCurrentView('list');
       setSelectedClass(null);
     } catch (err) {
+      console.log('DEBUG: handleUpdateClass - Error caught:', err);
       if (err instanceof Error && err.message === 'CLASS_NOT_FOUND') {
+        console.log('DEBUG: handleUpdateClass - CLASS_NOT_FOUND error detected');
         setError('Sınıf bulunamadı. Başka bir kullanıcı tarafından silinmiş olabilir.');
         await loadData(); // Reload data to update UI
         setCurrentView('list');
@@ -132,6 +141,7 @@ const ClassesPanel: React.FC<ClassesPanelProps> = ({ onBack, onViewClassDetails,
         setError('Sınıf güncellenirken hata oluştu.');
       }
     } finally {
+      console.log('DEBUG: handleUpdateClass - Setting actionLoading to false');
       setActionLoading(false);
     }
   };
