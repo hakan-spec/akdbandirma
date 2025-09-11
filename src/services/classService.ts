@@ -98,16 +98,12 @@ export const classService = {
         *,
         teachers!classes_teacher_id_fkey(name)
       `)
-      .single();
+      .maybeSingle();
 
     console.log('DEBUG: updateClass - Supabase response data:', data);
     console.log('DEBUG: updateClass - Supabase response error:', error);
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        console.log('DEBUG: updateClass - Class not found (PGRST116), throwing CLASS_NOT_FOUND');
-        throw new Error('CLASS_NOT_FOUND');
-      }
       console.error('Error updating class:', error);
       throw error;
     }
@@ -130,15 +126,16 @@ export const classService = {
       .from('classes')
       .select('id, name')
       .eq('id', id)
-      .single();
+      .maybeSingle();
     
     if (checkError) {
       console.error('DEBUG: Error checking if class exists:', checkError);
-      if (checkError.code === 'PGRST116') {
-        console.log('DEBUG: Class not found during check');
-        throw new Error('CLASS_NOT_FOUND');
-      }
       throw checkError;
+    }
+    
+    if (!existingClass) {
+      console.log('DEBUG: Class not found during check');
+      throw new Error('CLASS_NOT_FOUND');
     }
     
     console.log('DEBUG: Class exists, proceeding with deletion:', existingClass);
