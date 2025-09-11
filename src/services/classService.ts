@@ -98,6 +98,10 @@ export const classService = {
       .single();
 
     if (error) {
+      // Handle case where class is not found (might have been deleted)
+      if (error.code === 'PGRST116') {
+        throw new Error('CLASS_NOT_FOUND');
+      }
       console.error('Error updating class:', error);
       throw error;
     }
