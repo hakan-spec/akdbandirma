@@ -25,7 +25,7 @@ export const classService = {
       .from('classes')
       .select(`
         *,
-        teachers(name)
+        teachers!classes_teacher_id_fkey(name)
       `)
       .order('created_at', { ascending: false });
 
@@ -59,7 +59,7 @@ export const classService = {
       })
       .select(`
         *,
-        teachers(name)
+        teachers!classes_teacher_id_fkey(name)
       `)
       .single();
 
@@ -93,7 +93,7 @@ export const classService = {
       .eq('id', id)
       .select(`
         *,
-        teachers(name)
+        teachers!classes_teacher_id_fkey(name)
       `)
       .single();
 
