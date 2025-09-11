@@ -6,7 +6,7 @@ import { teacherService, Teacher } from '../services/teacherService';
 
 interface ClassFormProps {
   class?: Class | null;
-  onSubmit: (name: string, level: LanguageLevel, startDate?: string, endDate?: string, days?: string[], timeRange?: string, tags?: string[], teacherId?: string | null) => void;
+  onSubmit: (name: string, level: LanguageLevel, startDate?: string, endDate?: string, days?: string[], timeRange?: string, tags?: string[], teacherId?: string | null) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
 }
@@ -83,9 +83,9 @@ const ClassForm: React.FC<ClassFormProps> = ({ class: classData, onSubmit, onCan
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData.name, formData.level, formData.startDate, formData.endDate, formData.days, formData.timeRange, formData.tags, selectedTeacherId);
+    await onSubmit(formData.name, formData.level, formData.startDate, formData.endDate, formData.days, formData.timeRange, formData.tags, selectedTeacherId);
   };
 
   const groupedLevels = levelOptions.reduce((acc, level) => {
