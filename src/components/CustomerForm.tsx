@@ -70,7 +70,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ customer, onSubmit, onCance
     placementTestTeacher: customer?.placementTestTeacher || '',
     notes: customer?.notes || '',
     followUpDate: customer?.followUpDate || '',
-    referredByReferralCode: ''
+    referredByReferralCode: customer?.referrerInfo?.referralCode || ''
   });
 
   // Load active teachers when component mounts
@@ -101,7 +101,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ customer, onSubmit, onCance
     };
     
     // Referans kodunu sadece yeni öğrenci eklerken gönder
-    const referralCode = !customer && referredByReferralCode && referredByReferralCode.trim() !== '' 
+    const referralCode = referredByReferralCode && referredByReferralCode.trim() !== '' 
       ? referredByReferralCode.trim().toUpperCase() 
       : undefined;
     
@@ -391,24 +391,25 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ customer, onSubmit, onCance
           </div>
 
           {/* Referral Code - Only for new customers */}
-          {!customer && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Referans Kodu (Opsiyonel)
-              </label>
-              <input
-                type="text"
-                value={formData.referredByReferralCode}
-                onChange={(e) => setFormData(prev => ({ ...prev, referredByReferralCode: e.target.value.toUpperCase() }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-w-xs"
-                placeholder="Örn: AY123456"
-                maxLength={8}
-              />
-              <p className="text-sm text-gray-500 mt-1">
-                Bu öğrenci başka bir öğrencinin referansıyla geliyorsa, referans kodunu girin
-              </p>
-            </div>
-          )}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Referans Kodu (Opsiyonel)
+            </label>
+            <input
+              type="text"
+              value={formData.referredByReferralCode}
+              onChange={(e) => setFormData(prev => ({ ...prev, referredByReferralCode: e.target.value.toUpperCase() }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-w-xs"
+              placeholder="Örn: AY123456"
+              maxLength={8}
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              {customer 
+                ? 'Bu öğrencinin referans kodunu değiştirmek için yeni kodu girin veya boş bırakın'
+                : 'Bu öğrenci başka bir öğrencinin referansıyla geliyorsa, referans kodunu girin'
+              }
+            </p>
+          </div>
 
           {/* Notes */}
           <div>
