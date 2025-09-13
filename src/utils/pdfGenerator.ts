@@ -353,35 +353,35 @@ export const generateStudentReportPdf = async (customer: Customer) => {
           <div class="features-grid">
             <div class="feature-item">
               <span class="feature-icon">✓</span>
-              <span class="feature-text">Küçük Sınıflar</span>
+              <span class="feature-text">%100 Öğrenme Garantisi</span>
             </div>
             <div class="feature-item">
               <span class="feature-icon">✓</span>
-              <span class="feature-text">Deneyimli Öğretmenler</span>
+              <span class="feature-text">Uluslararası Geçerli Sertifika</span>
             </div>
             <div class="feature-item">
               <span class="feature-icon">✓</span>
-              <span class="feature-text">Modern Müfredat</span>
+              <span class="feature-text">Avrupa Dil Portfolyosu</span>
             </div>
             <div class="feature-item">
               <span class="feature-icon">✓</span>
-              <span class="feature-text">Esnek Saatler</span>
+              <span class="feature-text">8-12 Kişilik Sınıflar</span>
             </div>
             <div class="feature-item">
               <span class="feature-icon">✓</span>
-              <span class="feature-text">Online Destek</span>
+              <span class="feature-text">Konuşma Odaklı Eğitim</span>
             </div>
             <div class="feature-item">
               <span class="feature-icon">✓</span>
-              <span class="feature-text">Seviye Tespit</span>
+              <span class="feature-text">Ücretsiz Kitap ve Materyaller</span>
             </div>
             <div class="feature-item">
               <span class="feature-icon">✓</span>
-              <span class="feature-text">Konuşma Kulübü</span>
+              <span class="feature-text">Ücretsiz Kelime Öğrenme Programı</span>
             </div>
             <div class="feature-item">
               <span class="feature-icon">✓</span>
-              <span class="feature-text">Sertifika</span>
+              <span class="feature-text">Sınırsız Speaking Club</span>
             </div>
           </div>
         </div>
