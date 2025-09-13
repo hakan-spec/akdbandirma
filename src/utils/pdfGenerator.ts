@@ -66,7 +66,7 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         
         body {
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          line-height: 1.6;
+          line-height: 1.4;
           color: #333;
           background: #fff;
         }
@@ -74,46 +74,46 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         .container {
           max-width: 800px;
           margin: 0 auto;
-          padding: 20px;
+          padding: 15px;
         }
         
         .header {
           text-align: center;
           border-bottom: 3px solid #2563eb;
-          padding-bottom: 20px;
-          margin-bottom: 30px;
+          padding-bottom: 12px;
+          margin-bottom: 20px;
         }
         
         .logo {
-          font-size: 28px;
+          font-size: 22px;
           font-weight: bold;
           color: #2563eb;
-          margin-bottom: 10px;
+          margin-bottom: 6px;
         }
         
         .contact-info {
-          font-size: 12px;
+          font-size: 10px;
           color: #666;
-          line-height: 1.4;
+          line-height: 1.3;
         }
         
         .section {
-          margin-bottom: 25px;
+          margin-bottom: 15px;
           page-break-inside: avoid;
         }
         
         .section-title {
-          font-size: 18px;
+          font-size: 14px;
           font-weight: bold;
           color: #2563eb;
           border-bottom: 2px solid #e5e7eb;
-          padding-bottom: 8px;
-          margin-bottom: 15px;
+          padding-bottom: 4px;
+          margin-bottom: 10px;
         }
         
         .student-info {
           background: #f8fafc;
-          padding: 20px;
+          padding: 12px;
           border-radius: 8px;
           border-left: 4px solid #2563eb;
         }
@@ -121,8 +121,8 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         .info-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 15px;
-          margin-bottom: 15px;
+          gap: 8px;
+          margin-bottom: 10px;
         }
         
         .info-item {
@@ -131,14 +131,14 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         }
         
         .info-label {
-          font-size: 12px;
+          font-size: 10px;
           color: #666;
           font-weight: 600;
-          margin-bottom: 4px;
+          margin-bottom: 2px;
         }
         
         .info-value {
-          font-size: 14px;
+          font-size: 12px;
           color: #333;
           font-weight: 500;
         }
@@ -146,14 +146,14 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         .features-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 10px;
-          margin-top: 15px;
+          gap: 6px;
+          margin-top: 10px;
         }
         
         .feature-item {
           display: flex;
           align-items: center;
-          padding: 8px 12px;
+          padding: 6px 8px;
           background: #f0f9ff;
           border-radius: 6px;
           border-left: 3px solid #0ea5e9;
@@ -161,85 +161,74 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         
         .feature-icon {
           color: #0ea5e9;
-          margin-right: 8px;
+          margin-right: 6px;
           font-weight: bold;
         }
         
         .feature-text {
-          font-size: 13px;
+          font-size: 11px;
           color: #0c4a6e;
           font-weight: 500;
         }
         
-        .interview-item, .quote-item {
+        .quote-item {
           background: #fff;
           border: 1px solid #e5e7eb;
           border-radius: 8px;
-          padding: 15px;
-          margin-bottom: 15px;
+          padding: 10px;
+          margin-bottom: 10px;
         }
         
-        .interview-header, .quote-header {
+        .quote-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 10px;
-          padding-bottom: 8px;
+          margin-bottom: 6px;
+          padding-bottom: 4px;
           border-bottom: 1px solid #f3f4f6;
         }
         
-        .interview-type, .quote-type {
+        .quote-type {
           background: #dbeafe;
           color: #1e40af;
           padding: 4px 8px;
           border-radius: 4px;
-          font-size: 12px;
+          font-size: 10px;
           font-weight: 600;
         }
         
-        .interview-date, .quote-date {
-          font-size: 12px;
+        .quote-date {
+          font-size: 10px;
           color: #666;
         }
         
-        .interview-outcome {
-          background: #dcfce7;
-          color: #166534;
-          padding: 6px 10px;
-          border-radius: 6px;
-          font-size: 13px;
-          font-weight: 600;
-          margin-bottom: 10px;
-          display: inline-block;
-        }
-        
-        .interview-notes, .quote-notes {
-          font-size: 13px;
+        .quote-notes {
+          font-size: 11px;
           color: #374151;
           line-height: 1.5;
-          margin-bottom: 8px;
+          margin-bottom: 6px;
         }
         
         .price-highlight {
           background: #fef3c7;
           color: #92400e;
-          padding: 8px 12px;
+          padding: 6px 10px;
           border-radius: 6px;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: bold;
           text-align: center;
-          margin: 10px 0;
+          margin: 6px 0;
         }
         
         .payment-details {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 10px;
-          margin-top: 10px;
+          gap: 6px;
+          margin-top: 6px;
         }
         
         .payment-item {
-          font-size: 12px;
+          font-size: 10px;
           color: #666;
         }
         
@@ -252,39 +241,40 @@ export const generateStudentReportPdf = async (customer: Customer) => {
           text-align: center;
           color: #9ca3af;
           font-style: italic;
-          padding: 20px;
+          padding: 15px;
+          font-size: 12px;
         }
         
         .tags {
           display: flex;
           flex-wrap: wrap;
-          gap: 6px;
-          margin-top: 8px;
+          gap: 4px;
+          margin-top: 6px;
         }
         
         .tag {
           background: #e0e7ff;
           color: #3730a3;
-          padding: 4px 8px;
+          padding: 3px 6px;
           border-radius: 4px;
-          font-size: 11px;
+          font-size: 9px;
           font-weight: 500;
         }
         
         .footer {
-          margin-top: 40px;
+          margin-top: 20px;
           text-align: center;
-          font-size: 11px;
+          font-size: 9px;
           color: #9ca3af;
           border-top: 1px solid #e5e7eb;
-          padding-top: 15px;
+          padding-top: 10px;
         }
         
         @media print {
           .container {
             max-width: none;
             margin: 0;
-            padding: 15px;
+            padding: 10px;
           }
         }
       </style>
@@ -354,49 +344,9 @@ export const generateStudentReportPdf = async (customer: Customer) => {
               <span class="info-value">${levelConfig[customer.placementTestLevel]} ${customer.placementTestTeacher ? `(Sınavı yapan: ${customer.placementTestTeacher})` : ''}</span>
             </div>
             ` : ''}
-            
-          </div>
-        </div>
-
-        <!-- Kursun Fark Yaratan Özellikleri -->
-        <div class="section">
-          <h2 class="section-title">Kursumuzun Fark Yaratan Özellikleri</h2>
           <div class="features-grid">
             <div class="feature-item">
               <span class="feature-icon">✓</span>
-              <span class="feature-text">%100 Öğrenme Garantisi</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">🏆</span>
-              <span class="feature-text">Uluslararası Geçerli Sertifika</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">📋</span>
-              <span class="feature-text">Avrupa Dil Portfolyosu</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">👥</span>
-              <span class="feature-text">8-12 Kişilik Sınıflar</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">💬</span>
-              <span class="feature-text">Konuşma Odaklı Eğitim</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">📚</span>
-              <span class="feature-text">Ücretsiz Kitap ve Materyaller</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">📱</span>
-              <span class="feature-text">Ücretsiz Kelime Öğrenme Programı</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">🗣️</span>
-              <span class="feature-text">Sınırsız Speaking Club</span>
-            </div>
-          </div>
-        </div>
-
         <!-- Fiyat Teklifleri -->
         <div class="section">
           <h2 class="section-title">Fiyat Teklifleri (${customer.priceQuotes?.length || 0} Teklif)</h2>
