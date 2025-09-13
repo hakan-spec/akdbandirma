@@ -72,57 +72,57 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         }
         
         .container {
-          max-width: 800px;
+          max-width: 750px;
           margin: 0 auto;
-          padding: 15px;
+          padding: 10px;
         }
         
         .header {
           text-align: center;
           border-bottom: 3px solid #2563eb;
-          padding-bottom: 12px;
-          margin-bottom: 20px;
+          padding-bottom: 8px;
+          margin-bottom: 12px;
         }
         
         .logo {
-          font-size: 22px;
+          font-size: 18px;
           font-weight: bold;
           color: #2563eb;
-          margin-bottom: 6px;
+          margin-bottom: 4px;
         }
         
         .contact-info {
-          font-size: 10px;
+          font-size: 8px;
           color: #666;
           line-height: 1.3;
         }
         
         .section {
-          margin-bottom: 15px;
+          margin-bottom: 10px;
           page-break-inside: avoid;
         }
         
         .section-title {
-          font-size: 14px;
+          font-size: 12px;
           font-weight: bold;
           color: #2563eb;
           border-bottom: 2px solid #e5e7eb;
-          padding-bottom: 4px;
-          margin-bottom: 10px;
+          padding-bottom: 2px;
+          margin-bottom: 6px;
         }
         
         .student-info {
           background: #f8fafc;
-          padding: 12px;
+          padding: 8px;
           border-radius: 8px;
           border-left: 4px solid #2563eb;
         }
         
         .info-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 8px;
-          margin-bottom: 10px;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 4px;
+          margin-bottom: 6px;
         }
         
         .info-item {
@@ -131,29 +131,29 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         }
         
         .info-label {
-          font-size: 10px;
+          font-size: 8px;
           color: #666;
           font-weight: 600;
-          margin-bottom: 2px;
+          margin-bottom: 1px;
         }
         
         .info-value {
-          font-size: 12px;
+          font-size: 10px;
           color: #333;
           font-weight: 500;
         }
         
         .features-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 6px;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 3px;
           margin-top: 10px;
         }
         
         .feature-item {
           display: flex;
           align-items: center;
-          padding: 6px 8px;
+          padding: 4px 6px;
           background: #f0f9ff;
           border-radius: 6px;
           border-left: 3px solid #0ea5e9;
@@ -161,12 +161,12 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         
         .feature-icon {
           color: #0ea5e9;
-          margin-right: 6px;
+          margin-right: 4px;
           font-weight: bold;
         }
         
         .feature-text {
-          font-size: 11px;
+          font-size: 9px;
           color: #0c4a6e;
           font-weight: 500;
         }
@@ -175,60 +175,60 @@ export const generateStudentReportPdf = async (customer: Customer) => {
           background: #fff;
           border: 1px solid #e5e7eb;
           border-radius: 8px;
-          padding: 10px;
-          margin-bottom: 10px;
+          padding: 6px;
+          margin-bottom: 6px;
         }
         
         .quote-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 6px;
-          padding-bottom: 4px;
+          margin-bottom: 4px;
+          padding-bottom: 2px;
           border-bottom: 1px solid #f3f4f6;
         }
         
         .quote-type {
           background: #dbeafe;
           color: #1e40af;
-          padding: 4px 8px;
+          padding: 2px 6px;
           border-radius: 4px;
-          font-size: 10px;
+          font-size: 9px;
           font-weight: 600;
         }
         
         .quote-date {
-          font-size: 10px;
+          font-size: 8px;
           color: #666;
         }
         
         .quote-notes {
-          font-size: 11px;
+          font-size: 9px;
           color: #374151;
           line-height: 1.5;
-          margin-bottom: 6px;
+          margin-bottom: 4px;
         }
         
         .price-highlight {
           background: #fef3c7;
           color: #92400e;
-          padding: 6px 10px;
+          padding: 4px 8px;
           border-radius: 6px;
-          font-size: 14px;
+          font-size: 12px;
           font-weight: bold;
           text-align: center;
-          margin: 6px 0;
+          margin: 4px 0;
         }
         
         .payment-details {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 6px;
-          margin-top: 6px;
+          gap: 4px;
+          margin-top: 4px;
         }
         
         .payment-item {
-          font-size: 10px;
+          font-size: 8px;
           color: #666;
         }
         
@@ -248,26 +248,26 @@ export const generateStudentReportPdf = async (customer: Customer) => {
         .tags {
           display: flex;
           flex-wrap: wrap;
-          gap: 4px;
-          margin-top: 6px;
+          gap: 2px;
+          margin-top: 4px;
         }
         
         .tag {
           background: #e0e7ff;
           color: #3730a3;
-          padding: 3px 6px;
+          padding: 2px 4px;
           border-radius: 4px;
-          font-size: 9px;
+          font-size: 8px;
           font-weight: 500;
         }
         
         .footer {
-          margin-top: 20px;
+          margin-top: 12px;
           text-align: center;
-          font-size: 9px;
+          font-size: 7px;
           color: #9ca3af;
           border-top: 1px solid #e5e7eb;
-          padding-top: 10px;
+          padding-top: 6px;
         }
         
         @media print {
@@ -330,7 +330,7 @@ export const generateStudentReportPdf = async (customer: Customer) => {
             </div>
             
             ${customer.interestedLevels.length > 0 ? `
-            <div class="info-item" style="margin-top: 15px;">
+            <div class="info-item" style="margin-top: 8px;">
               <span class="info-label">İlgilenilen Seviyeler</span>
               <div class="tags">
                 ${customer.interestedLevels.map(level => `<span class="tag">${levelConfig[level] || level}</span>`).join('')}
@@ -339,14 +339,53 @@ export const generateStudentReportPdf = async (customer: Customer) => {
             ` : ''}
             
             ${customer.placementTestLevel ? `
-            <div class="info-item" style="margin-top: 15px;">
+            <div class="info-item" style="margin-top: 8px;">
               <span class="info-label">Seviye Tespit Sınavı Sonucu</span>
               <span class="info-value">${levelConfig[customer.placementTestLevel]} ${customer.placementTestTeacher ? `(Sınavı yapan: ${customer.placementTestTeacher})` : ''}</span>
             </div>
             ` : ''}
+          </div>
+        </div>
+
+        <!-- Kurs Özellikleri -->
+        <div class="section">
+          <h2 class="section-title">Amerikan Kültür'ün Fark Yaratan Özellikleri</h2>
           <div class="features-grid">
             <div class="feature-item">
               <span class="feature-icon">✓</span>
+              <span class="feature-text">Küçük Sınıflar</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✓</span>
+              <span class="feature-text">Deneyimli Öğretmenler</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✓</span>
+              <span class="feature-text">Modern Müfredat</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✓</span>
+              <span class="feature-text">Esnek Saatler</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✓</span>
+              <span class="feature-text">Online Destek</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✓</span>
+              <span class="feature-text">Seviye Tespit</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✓</span>
+              <span class="feature-text">Konuşma Kulübü</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✓</span>
+              <span class="feature-text">Sertifika</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Fiyat Teklifleri -->
         <div class="section">
           <h2 class="section-title">Fiyat Teklifleri (${customer.priceQuotes?.length || 0} Teklif)</h2>
