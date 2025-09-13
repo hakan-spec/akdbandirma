@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Edit, Trash2, Plus, Phone, Mail, Calendar, MessageSquare, User, Clock, Calculator, CreditCard, Gift, Users, CheckCircle, DollarSign, History, Wallet } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Plus, Phone, Mail, Calendar, MessageSquare, User, Clock, Calculator, CreditCard, Gift, Users, CheckCircle, DollarSign, History, Wallet, FileText } from 'lucide-react';
 import { Customer, Interview, ContactType, RegistrationType, PriceQuote, ReferralPayment, BonusPayment } from '../types/Customer';
 import CustomerForm from './CustomerForm';
 import InterviewForm from './InterviewForm';
 import PriceQuoteForm from './PriceQuoteForm';
+import { generateStudentReportPdf } from '../utils/pdfGenerator';
 
 interface CustomerDetailProps {
   customer: Customer;
@@ -72,6 +73,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, onBack, onUpd
   const [showBonusPaymentModal, setShowBonusPaymentModal] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentNotes, setPaymentNotes] = useState('');
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   // Referans ile gelen öğrencileri yükle
   useEffect(() => {
@@ -215,6 +217,18 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, onBack, onUpd
     }
   };
 
+  const handleGeneratePdf = async () => {
+    try {
+      setPdfLoading(true);
+      await generateStudentReportPdf(customer);
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      setError('PDF oluşturulurken hata oluştu.');
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('tr-TR', {
       year: 'numeric',
@@ -311,6 +325,18 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, onBack, onUpd
               >
                 <Calculator className="h-4 w-4" />
                 <span>Fiyat Teklifi</span>
+              </button>
+              <button
+                onClick={handleGeneratePdf}
+                disabled={loading || actionLoading || pdfLoading}
+                className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
+              >
+                {pdfLoading ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                ) : (
+                  <FileText className="h-4 w-4" />
+                )}
+                <span>{pdfLoading ? 'Oluşturuluyor...' : 'PDF Rapor'}</span>
               </button>
               <button
                 onClick={() => setShowEditForm(true)}

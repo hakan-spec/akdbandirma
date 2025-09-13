@@ -26,33 +26,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Helper function to clear invalid tokens
-  const clearInvalidTokens = () => {
-    try {
-      const projectRef = import.meta.env.VITE_SUPABASE_URL?.split('//')[1]?.split('.')[0];
-      if (projectRef) {
-        localStorage.removeItem(`sb-${projectRef}-auth-token`);
-        sessionStorage.removeItem(`sb-${projectRef}-auth-token`);
-      }
-      // Also clear any other potential auth storage keys
-      Object.keys(localStorage).forEach(key => {
-        if (key.includes('supabase') || key.includes('auth-token')) {
-          localStorage.removeItem(key);
-        }
-      });
-      Object.keys(sessionStorage).forEach(key => {
-        if (key.includes('supabase') || key.includes('auth-token')) {
-          sessionStorage.removeItem(key);
-        }
-      });
-    } catch (err) {
-      console.error('Error clearing tokens:', err);
-    }
-  };
-
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        // Clear invalid tokens on initialization
+        const clearInvalidTokens = () => {
+          localStorage.removeItem('sb-' + import.meta.env.VITE_SUPABASE_URL?.split('//')[1]?.split('.')[0] + '-auth-token');
+          sessionStorage.removeItem('sb-' + import.meta.env.VITE_SUPABASE_URL?.split('//')[1]?.split('.')[0] + '-auth-token');
+        };
+
         // Get initial session
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
@@ -64,13 +46,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const { data: { session: retrySession }, error: retryError } = await supabase.auth.getSession();
             if (retryError) {
               console.error('Auth retry error:', retryError);
-              setError('Oturum bilgileri temizlendi. Lütfen tekrar giriş yapın.');
+              setError('Kimlik doğrulama hatası: ' + retryError.message);
             } else {
               setSession(retrySession);
               setUser(retrySession?.user ?? null);
             }
           } else {
-            setError('Kimlik doğrulama hatası. Lütfen tekrar giriş yapın.');
+            setError('Kimlik doğrulama hatası: ' + error.message);
           }
         } else {
           setSession(session);
@@ -78,17 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       } catch (err) {
         console.error('Auth initialization error:', err);
-        // Check if it's a refresh token error thrown directly
-        if (err instanceof Error && (
-          err.message.includes('refresh_token_not_found') || 
-          err.message.includes('Invalid Refresh Token') ||
-          err.message.includes('Refresh Token Not Found')
-        )) {
-          clearInvalidTokens();
-          setError('Oturum süresi dolmuş. Lütfen tekrar giriş yapın.');
-        } else {
-          setError('Kimlik doğrulama başlatılamadı. Lütfen sayfayı yenileyin.');
-        }
+        setError('Kimlik doğrulama başlatılamadı');
       } finally {
         setLoading(false);
       }
