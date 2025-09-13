@@ -109,12 +109,14 @@ const PriceQuoteForm: React.FC<PriceQuoteFormProps> = ({ customerId, onSubmit, o
                     Peşin Fiyat (₺) *
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     required
-                    min="0"
-                    step="0.01"
                     value={formData.cashPrice || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, cashPrice: parseFloat(e.target.value) || 0 }))}
+                    onChange={(e) => {
+                      const cleanValue = e.target.value.replace(/[^0-9.,]/g, '').replace(',', '.');
+                      const numericValue = parseFloat(cleanValue) || 0;
+                      setFormData(prev => ({ ...prev, cashPrice: numericValue }));
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="0.00"
                   />
@@ -125,12 +127,14 @@ const PriceQuoteForm: React.FC<PriceQuoteFormProps> = ({ customerId, onSubmit, o
                     Taksitli Fiyat (₺) *
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     required
-                    min="0"
-                    step="0.01"
                     value={formData.installmentPrice || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, installmentPrice: parseFloat(e.target.value) || 0 }))}
+                    onChange={(e) => {
+                      const cleanValue = e.target.value.replace(/[^0-9.,]/g, '').replace(',', '.');
+                      const numericValue = parseFloat(cleanValue) || 0;
+                      setFormData(prev => ({ ...prev, installmentPrice: numericValue }));
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="0.00"
                   />
@@ -143,11 +147,13 @@ const PriceQuoteForm: React.FC<PriceQuoteFormProps> = ({ customerId, onSubmit, o
                 İndirim (₺)
               </label>
               <input
-                type="number"
-                min="0"
-                step="0.01"
+                type="text"
                 value={formData.discount || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, discount: parseFloat(e.target.value) || 0 }))}
+                onChange={(e) => {
+                  const cleanValue = e.target.value.replace(/[^0-9.,]/g, '').replace(',', '.');
+                  const numericValue = parseFloat(cleanValue) || 0;
+                  setFormData(prev => ({ ...prev, discount: numericValue }));
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="0.00"
               />
