@@ -220,7 +220,7 @@ const ClassesPanel: React.FC<ClassesPanelProps> = ({ onBack, onViewClassDetails,
       <ClassForm
         class={selectedClass}
         onSubmit={selectedClass 
-          ? (name, level, startDate, endDate, days, timeRange, tags) => handleUpdateClass(selectedClass.id, name, level, startDate, endDate, days, timeRange, tags)
+          ? (name, level, startDate, endDate, days, timeRange, tags, teacherId) => handleUpdateClass(selectedClass.id, name, level, startDate, endDate, days, timeRange, tags, teacherId)
           : handleAddClass
         }
         onCancel={() => {
