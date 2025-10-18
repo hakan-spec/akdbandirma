@@ -62,8 +62,10 @@ const ReportPanel: React.FC<ReportPanelProps> = ({ onBack, currentUserId, curren
       // Get financial data
       const financialData = await studentService.getFinancialReportData(startDateTime, endDateTime);
 
-      // Get all students to analyze by education level
+      // Get all students and classes to analyze by education level
       const allStudents = await studentService.getAllStudents();
+      const { classService } = await import('../services/classService');
+      const allClasses = await classService.getAllClasses();
 
       // Calculate statistics
       const totalInterviews = interviews.length;
@@ -99,16 +101,22 @@ const ReportPanel: React.FC<ReportPanelProps> = ({ onBack, currentUserId, curren
         }
       });
 
-      // Group students by education level and placement test level
+      // Group students by education level and class level (only students assigned to classes)
       const studentsByEducationLevel: { [level: string]: { [classLevel: string]: number } } = {};
+
       allStudents.forEach(student => {
-        if (student.educationLevel && student.placementTestLevel) {
-          if (!studentsByEducationLevel[student.educationLevel]) {
-            studentsByEducationLevel[student.educationLevel] = {};
+        // Only count students who are assigned to a class
+        if (student.classId && student.educationLevel) {
+          // Find the class this student belongs to
+          const studentClass = allClasses.find(c => c.id === student.classId);
+          if (studentClass) {
+            if (!studentsByEducationLevel[student.educationLevel]) {
+              studentsByEducationLevel[student.educationLevel] = {};
+            }
+            const level = studentClass.level; // Use the class level, not placement test level
+            studentsByEducationLevel[student.educationLevel][level] =
+              (studentsByEducationLevel[student.educationLevel][level] || 0) + 1;
           }
-          const level = student.placementTestLevel;
-          studentsByEducationLevel[student.educationLevel][level] =
-            (studentsByEducationLevel[student.educationLevel][level] || 0) + 1;
         }
       });
 
