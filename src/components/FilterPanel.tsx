@@ -72,6 +72,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onC
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
             <option value="">Tümü</option>
+            <option value="not-kayitli">Kayıtlı Olmayanlar</option>
             <option value="yeni">Yeni</option>
             <option value="ilgili">İlgili</option>
             <option value="kayitli">Kayıtlı</option>

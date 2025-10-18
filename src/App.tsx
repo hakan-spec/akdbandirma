@@ -53,7 +53,11 @@ function App() {
     );
 
     if (filters.status) {
-      filtered = filtered.filter(customer => customer.status === filters.status);
+      if (filters.status === 'not-kayitli') {
+        filtered = filtered.filter(customer => customer.status !== 'kayitli');
+      } else {
+        filtered = filtered.filter(customer => customer.status === filters.status);
+      }
     }
     if (filters.educationLevel) {
       filtered = filtered.filter(customer => customer.educationLevel === filters.educationLevel);
