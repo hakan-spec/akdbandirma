@@ -102,7 +102,7 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
     return scheduleMap;
   };
 
-  const getTotalHoursPerDay = (items: ScheduleItem[]): number => {
+  const getTotalLessonsPerDay = (items: ScheduleItem[]): number => {
     let totalMinutes = 0;
     items.forEach(item => {
       const [start, end] = item.timeRange.split('-').map(t => t.trim());
@@ -110,12 +110,12 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
       const endMin = parseTimeToMinutes(end);
       totalMinutes += (endMin - startMin);
     });
-    return totalMinutes / 60;
+    return Math.round(totalMinutes / 40);
   };
 
   const scheduleByDay = getScheduleByDay();
-  const totalWeeklyHours = Array.from(scheduleByDay.values())
-    .reduce((sum, items) => sum + getTotalHoursPerDay(items), 0);
+  const totalWeeklyLessons = Array.from(scheduleByDay.values())
+    .reduce((sum, items) => sum + getTotalLessonsPerDay(items), 0);
 
   if (loading) {
     return (
@@ -194,7 +194,7 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-green-600">Haftalık Ders Saati</p>
-                  <p className="text-2xl font-bold text-green-900">{totalWeeklyHours.toFixed(1)} saat</p>
+                  <p className="text-2xl font-bold text-green-900">{totalWeeklyLessons} ders</p>
                 </div>
               </div>
             </div>
@@ -242,7 +242,7 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
               <div className="divide-y divide-gray-200">
                 {daysOrder.map(day => {
                   const dayItems = scheduleByDay.get(day) || [];
-                  const totalHours = getTotalHoursPerDay(dayItems);
+                  const totalLessons = getTotalLessonsPerDay(dayItems);
 
                   return (
                     <div key={day} className="px-6 py-4">
@@ -251,7 +251,7 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
                           <h4 className="font-medium text-gray-900">{day}</h4>
                           {dayItems.length > 0 && (
                             <p className="text-xs text-gray-500 mt-1">
-                              {totalHours.toFixed(1)} saat
+                              {totalLessons} ders
                             </p>
                           )}
                         </div>
@@ -296,7 +296,7 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {daysOrder.map(day => {
                 const dayItems = scheduleByDay.get(day) || [];
-                const totalHours = getTotalHoursPerDay(dayItems);
+                const totalLessons = getTotalLessonsPerDay(dayItems);
 
                 if (dayItems.length === 0) return null;
 
@@ -304,7 +304,7 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
                   <div key={day} className="bg-white shadow-sm rounded-lg overflow-hidden">
                     <div className="px-4 py-3 bg-blue-600 text-white">
                       <h4 className="font-semibold">{day}</h4>
-                      <p className="text-xs opacity-90">{totalHours.toFixed(1)} saat</p>
+                      <p className="text-xs opacity-90">{totalLessons} ders</p>
                     </div>
                     <div className="p-4 space-y-2">
                       {dayItems.map((item, idx) => (
