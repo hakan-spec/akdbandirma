@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Filter } from 'lucide-react';
-import { CustomerStatus, EducationLevel, ContactType, RegistrationType, FollowUpStatus, LanguageLevel } from '../types/Customer';
+import { CustomerStatus, EducationLevel, ContactType, RegistrationType, FollowUpStatus, LanguageLevel, ClassStatus } from '../types/Customer';
 
 interface FilterPanelProps {
   filters: {
@@ -11,6 +11,7 @@ interface FilterPanelProps {
     languageLevel: LanguageLevel | '';
     placementTestLevel: LanguageLevel | '';
     followUpStatus: FollowUpStatus | '';
+    classStatus: ClassStatus | '';
   };
   onFiltersChange: (filters: {
     status: CustomerStatus | '';
@@ -20,6 +21,7 @@ interface FilterPanelProps {
     languageLevel: LanguageLevel | '';
     placementTestLevel: LanguageLevel | '';
     followUpStatus: FollowUpStatus | '';
+    classStatus: ClassStatus | '';
   }) => void;
   onClose: () => void;
 }
@@ -40,11 +42,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onC
       registrationType: '',
       languageLevel: '',
       placementTestLevel: '',
-      followUpStatus: ''
+      followUpStatus: '',
+      classStatus: ''
     });
   };
 
-  const hasActiveFilters = filters.status || filters.educationLevel || filters.contactType || filters.registrationType || filters.languageLevel || filters.placementTestLevel || filters.followUpStatus;
+  const hasActiveFilters = filters.status || filters.educationLevel || filters.contactType || filters.registrationType || filters.languageLevel || filters.placementTestLevel || filters.followUpStatus || filters.classStatus;
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
@@ -199,7 +202,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onC
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Takip Durumu
@@ -213,6 +216,20 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onC
             <option value="geciken">🔴 Geciken Takipler</option>
             <option value="bu-hafta">🟠 Bu Haftaki Takipler</option>
             <option value="gelecek-hafta">🟡 Gelecek Haftaki Takipler</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Sınıf Durumu
+          </label>
+          <select
+            value={filters.classStatus}
+            onChange={(e) => handleFilterChange('classStatus', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+          >
+            <option value="">Tümü</option>
+            <option value="has-class">Sınıfı Var</option>
+            <option value="no-class">Sınıfı Yok</option>
           </select>
         </div>
       </div>

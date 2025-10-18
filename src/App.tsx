@@ -13,7 +13,7 @@ import ClassesPanel from './components/ClassesPanel';
 import ClassDetailPanel from './components/ClassDetailPanel';
 import TeachersPanel from './components/TeachersPanel';
 import { Class } from './types/Class';
-import { Customer, CustomerStatus, EducationLevel, ContactType, RegistrationType, LanguageLevel, FollowUpStatus } from './types/Customer';
+import { Customer, CustomerStatus, EducationLevel, ContactType, RegistrationType, LanguageLevel, FollowUpStatus, ClassStatus } from './types/Customer';
 
 function App() {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -34,7 +34,8 @@ function App() {
     registrationType: '' as RegistrationType | '',
     languageLevel: '' as LanguageLevel | '',
     placementTestLevel: '' as LanguageLevel | '',
-    followUpStatus: '' as FollowUpStatus | ''
+    followUpStatus: '' as FollowUpStatus | '',
+    classStatus: '' as ClassStatus | ''
   });
 
   // Load students from Supabase when user is available
@@ -77,45 +78,52 @@ function App() {
     if (filters.followUpStatus) {
       filtered = filtered.filter(customer => {
         if (!customer.followUpDate) return false;
-        
+
         const followUpDate = new Date(customer.followUpDate);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         if (filters.followUpStatus === 'geciken') {
           return followUpDate < today;
         }
-        
+
         if (filters.followUpStatus === 'bu-hafta') {
           const startOfWeek = new Date(today);
           const dayOfWeek = today.getDay();
           const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Pazartesi'yi hafta başı yap
           startOfWeek.setDate(today.getDate() + diff);
           startOfWeek.setHours(0, 0, 0, 0);
-          
+
           const endOfWeek = new Date(startOfWeek);
           endOfWeek.setDate(startOfWeek.getDate() + 6);
           endOfWeek.setHours(23, 59, 59, 999);
-          
+
           return followUpDate >= startOfWeek && followUpDate <= endOfWeek;
         }
-        
+
         if (filters.followUpStatus === 'gelecek-hafta') {
           const startOfNextWeek = new Date(today);
           const dayOfWeek = today.getDay();
           const diff = dayOfWeek === 0 ? 1 : 8 - dayOfWeek; // Gelecek Pazartesi
           startOfNextWeek.setDate(today.getDate() + diff);
           startOfNextWeek.setHours(0, 0, 0, 0);
-          
+
           const endOfNextWeek = new Date(startOfNextWeek);
           endOfNextWeek.setDate(startOfNextWeek.getDate() + 6);
           endOfNextWeek.setHours(23, 59, 59, 999);
-          
+
           return followUpDate >= startOfNextWeek && followUpDate <= endOfNextWeek;
         }
-        
+
         return false;
       });
+    }
+    if (filters.classStatus) {
+      if (filters.classStatus === 'has-class') {
+        filtered = filtered.filter(customer => customer.classId !== null && customer.classId !== undefined);
+      } else if (filters.classStatus === 'no-class') {
+        filtered = filtered.filter(customer => !customer.classId);
+      }
     }
 
     setFilteredCustomers(filtered);

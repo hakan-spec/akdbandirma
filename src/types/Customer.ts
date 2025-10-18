@@ -12,6 +12,8 @@ export type PaymentType = 'pesin' | 'taksit';
 
 export type FollowUpStatus = 'geciken' | 'bu-hafta' | 'gelecek-hafta';
 
+export type ClassStatus = 'has-class' | 'no-class';
+
 export interface PriceQuote {
   id: string;
   userId?: string;
