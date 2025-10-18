@@ -234,14 +234,14 @@ function App() {
     interested: customers.filter(c => c.status === 'ilgili').length,
     enrolled: customers.filter(c => c.status === 'kayitli').length,
     overdueFollowUps: customers.filter(c => {
-      if (!c.followUpDate) return false;
+      if (!c.followUpDate || c.followUpCompleted) return false;
       const followUpDate = new Date(c.followUpDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       return followUpDate < today;
     }).length,
     thisWeekFollowUps: customers.filter(c => {
-      if (!c.followUpDate) return false;
+      if (!c.followUpDate || c.followUpCompleted) return false;
       const followUpDate = new Date(c.followUpDate);
       const today = new Date();
       const startOfWeek = new Date(today);
@@ -249,11 +249,11 @@ function App() {
       const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Pazartesi'yi hafta başı yap
       startOfWeek.setDate(today.getDate() + diff);
       startOfWeek.setHours(0, 0, 0, 0);
-      
+
       const endOfWeek = new Date(startOfWeek);
       endOfWeek.setDate(startOfWeek.getDate() + 6);
       endOfWeek.setHours(23, 59, 59, 999);
-      
+
       return followUpDate >= startOfWeek && followUpDate <= endOfWeek;
     }).length
   };
