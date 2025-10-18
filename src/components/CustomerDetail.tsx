@@ -763,7 +763,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, onBack, onUpd
                       {interview.followUpDate && (
                         <div className="flex items-center space-x-1 text-sm text-orange-600">
                           <Clock className="h-4 w-4" />
-                          <span>Takip: {formatShortDate(interview.followUpDate)}</span>
+                          <span>Takip: {formatDate(interview.followUpDate)}</span>
                         </div>
                       )}
                     </div>
@@ -866,7 +866,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, onBack, onUpd
                 <div>
                   <p className="text-sm font-medium text-orange-900">Takip Tarihi</p>
                   <p className="text-sm text-orange-700">
-                    {formatShortDate(customer.followUpDate)}
+                    {formatDate(customer.followUpDate)}
                   </p>
                 </div>
               </div>

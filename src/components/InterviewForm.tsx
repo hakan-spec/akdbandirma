@@ -101,19 +101,19 @@ const InterviewForm: React.FC<InterviewFormProps> = ({ customerId, onSubmit, onC
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Calendar className="h-4 w-4 inline mr-1" />
-              Takip Tarihi
+              Takip Tarihi ve Saati
             </label>
             <input
-              type="date"
-              value={formData.followUpDate ? formData.followUpDate.split('T')[0] : ''}
-              onChange={(e) => setFormData(prev => ({ 
-                ...prev, 
-                followUpDate: e.target.value ? new Date(e.target.value).toISOString() : '' 
+              type="datetime-local"
+              value={formData.followUpDate ? formData.followUpDate.slice(0, 16) : ''}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                followUpDate: e.target.value ? new Date(e.target.value).toISOString() : ''
               }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-w-xs"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-w-md"
             />
             <p className="text-sm text-gray-500 mt-1">
-              Öğrenci ile tekrar iletişim kurulacak tarih
+              Öğrenci ile tekrar iletişim kurulacak tarih ve saat
             </p>
           </div>
 
