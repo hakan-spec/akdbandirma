@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Plus, Users, Edit, Trash2, Search, User, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Plus, Users, Edit, Trash2, Search, User, CheckCircle, XCircle, Calendar } from 'lucide-react';
 import { teacherService, Teacher } from '../services/teacherService';
 import TeacherForm from './TeacherForm';
+import TeacherScheduleView from './TeacherScheduleView';
 
 interface TeachersPanelProps {
   onBack: () => void;
@@ -12,7 +13,7 @@ const TeachersPanel: React.FC<TeachersPanelProps> = ({ onBack }) => {
   const [filteredTeachers, setFilteredTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentView, setCurrentView] = useState<'list' | 'form'>('list');
+  const [currentView, setCurrentView] = useState<'list' | 'form' | 'schedule'>('list');
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -123,7 +124,7 @@ const TeachersPanel: React.FC<TeachersPanelProps> = ({ onBack }) => {
     return (
       <TeacherForm
         teacher={selectedTeacher}
-        onSubmit={selectedTeacher 
+        onSubmit={selectedTeacher
           ? (name, isActive) => handleUpdateTeacher(selectedTeacher.id, name, isActive)
           : handleAddTeacher
         }
@@ -132,6 +133,18 @@ const TeachersPanel: React.FC<TeachersPanelProps> = ({ onBack }) => {
           setSelectedTeacher(null);
         }}
         loading={actionLoading}
+      />
+    );
+  }
+
+  if (currentView === 'schedule' && selectedTeacher) {
+    return (
+      <TeacherScheduleView
+        teacher={selectedTeacher}
+        onBack={() => {
+          setCurrentView('list');
+          setSelectedTeacher(null);
+        }}
       />
     );
   }
@@ -315,7 +328,14 @@ const TeachersPanel: React.FC<TeachersPanelProps> = ({ onBack }) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredTeachers.map((teacher) => (
-                    <tr key={teacher.id} className="hover:bg-gray-50">
+                    <tr
+                      key={teacher.id}
+                      className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() => {
+                        setSelectedTeacher(teacher);
+                        setCurrentView('schedule');
+                      }}
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
@@ -332,7 +352,10 @@ const TeachersPanel: React.FC<TeachersPanelProps> = ({ onBack }) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
-                          onClick={() => handleToggleActive(teacher)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleActive(teacher);
+                          }}
                           disabled={actionLoading}
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors disabled:opacity-50 ${
                             teacher.isActive
@@ -359,19 +382,37 @@ const TeachersPanel: React.FC<TeachersPanelProps> = ({ onBack }) => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedTeacher(teacher);
+                              setCurrentView('schedule');
+                            }}
+                            disabled={actionLoading}
+                            className="text-green-600 hover:text-green-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Ders Programı"
+                          >
+                            <Calendar className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setSelectedTeacher(teacher);
                               setCurrentView('form');
                             }}
                             disabled={actionLoading}
                             className="text-blue-600 hover:text-blue-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Düzenle"
                           >
                             <Edit className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => handleDeleteTeacher(teacher.id, teacher.name)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteTeacher(teacher.id, teacher.name);
+                            }}
                             disabled={actionLoading}
                             className="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Sil"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
