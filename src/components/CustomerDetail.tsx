@@ -107,26 +107,35 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, onBack, onUpd
   const handleAddInterview = async (interviewData: Omit<Interview, 'id'>) => {
     try {
       setActionLoading(true);
-      
+
+      console.log('DEBUG: handleAddInterview - interviewData:', interviewData);
+      console.log('DEBUG: handleAddInterview - customer.followUpDate before:', customer.followUpDate);
+
       // Add interview to database
       const { studentService } = await import('../services/studentService');
       await studentService.addInterview(customer.id, interviewData);
-      
+
       // Check if status should be updated based on outcome
       let updatedStatus = customer.status;
-      if (interviewData.outcome && 
-          (interviewData.outcome.toLowerCase().includes('kayıt oldu') || 
+      if (interviewData.outcome &&
+          (interviewData.outcome.toLowerCase().includes('kayıt oldu') ||
            interviewData.outcome.toLowerCase().includes('kayıt edildi') ||
            interviewData.outcome.toLowerCase().includes('kaydoldu'))) {
         updatedStatus = 'kayitli';
       }
-      
-      // If student is enrolled, remove from follow-up tracking
-      let updatedFollowUpDate = interviewData.followUpDate;
+
+      // Update follow-up date logic:
+      // - If student is enrolled, always remove follow-up completely
+      // - Otherwise, use the new follow-up date from the interview (which may be undefined to clear it)
+      let updatedFollowUpDate: string | undefined;
       if (updatedStatus === 'kayitli') {
         updatedFollowUpDate = undefined;
+      } else {
+        updatedFollowUpDate = interviewData.followUpDate;
       }
-      
+
+      console.log('DEBUG: handleAddInterview - updatedFollowUpDate:', updatedFollowUpDate);
+
       // Update customer with new status and last contact
       const updatedCustomer = {
         ...customer,
@@ -134,7 +143,9 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, onBack, onUpd
         status: updatedStatus,
         followUpDate: updatedFollowUpDate
       };
-      
+
+      console.log('DEBUG: handleAddInterview - updatedCustomer.followUpDate:', updatedCustomer.followUpDate);
+
       await onUpdate(updatedCustomer);
       setShowInterviewForm(false);
     } catch (err) {
