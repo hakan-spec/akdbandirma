@@ -78,6 +78,7 @@ function App() {
     if (filters.followUpStatus) {
       filtered = filtered.filter(customer => {
         if (!customer.followUpDate) return false;
+        if (customer.followUpCompleted) return false;
 
         const followUpDate = new Date(customer.followUpDate);
         const today = new Date();
