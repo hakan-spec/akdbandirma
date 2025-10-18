@@ -6,7 +6,7 @@ import { Customer } from '../types/Customer';
 interface AddStudentToClassFormProps {
   class: Class;
   availableStudents: Customer[];
-  onSubmit: (studentId: string) => void;
+  onSubmit: (studentIds: string[]) => void;
   onCancel: () => void;
   loading?: boolean;
 }
@@ -18,7 +18,7 @@ const AddStudentToClassForm: React.FC<AddStudentToClassFormProps> = ({
   onCancel,
   loading = false
 }) => {
-  const [selectedStudentId, setSelectedStudentId] = useState('');
+  const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredStudents = availableStudents.filter(student =>
@@ -29,9 +29,19 @@ const AddStudentToClassForm: React.FC<AddStudentToClassFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedStudentId) {
-      onSubmit(selectedStudentId);
+    if (selectedStudentIds.length > 0) {
+      onSubmit(selectedStudentIds);
     }
+  };
+
+  const toggleStudent = (studentId: string) => {
+    setSelectedStudentIds(prev => {
+      if (prev.includes(studentId)) {
+        return prev.filter(id => id !== studentId);
+      } else {
+        return [...prev, studentId];
+      }
+    });
   };
 
   return (
@@ -78,7 +88,7 @@ const AddStudentToClassForm: React.FC<AddStudentToClassFormProps> = ({
               {/* Student Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Öğrenci Seçin *
+                  Öğrenci Seçin * (Birden fazla seçebilirsiniz)
                 </label>
                 <div className="space-y-2 max-h-64 overflow-y-auto border border-gray-200 rounded-md p-3">
                   {filteredStudents.length === 0 ? (
@@ -89,15 +99,17 @@ const AddStudentToClassForm: React.FC<AddStudentToClassFormProps> = ({
                     filteredStudents.map((student) => (
                       <label
                         key={student.id}
-                        className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                        className={`flex items-center space-x-3 p-3 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${
+                          selectedStudentIds.includes(student.id)
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-200'
+                        }`}
                       >
                         <input
-                          type="radio"
-                          name="selectedStudent"
-                          value={student.id}
-                          checked={selectedStudentId === student.id}
-                          onChange={(e) => setSelectedStudentId(e.target.value)}
-                          className="text-green-600 focus:ring-green-500"
+                          type="checkbox"
+                          checked={selectedStudentIds.includes(student.id)}
+                          onChange={() => toggleStudent(student.id)}
+                          className="text-green-600 focus:ring-green-500 h-4 w-4"
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
@@ -127,15 +139,21 @@ const AddStudentToClassForm: React.FC<AddStudentToClassFormProps> = ({
                 </div>
               </div>
 
-              {selectedStudentId && (
+              {selectedStudentIds.length > 0 && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <p className="text-sm text-green-800">
-                    <strong>Seçilen öğrenci:</strong> {
-                      filteredStudents.find(s => s.id === selectedStudentId)?.name
-                    } {
-                      filteredStudents.find(s => s.id === selectedStudentId)?.surname
-                    }
+                  <p className="text-sm text-green-800 font-medium mb-2">
+                    <strong>Seçilen öğrenciler ({selectedStudentIds.length}):</strong>
                   </p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedStudentIds.map(id => {
+                      const student = availableStudents.find(s => s.id === id);
+                      return student ? (
+                        <span key={id} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          {student.name} {student.surname}
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
                 </div>
               )}
             </>
@@ -153,7 +171,7 @@ const AddStudentToClassForm: React.FC<AddStudentToClassFormProps> = ({
             </button>
             <button
               type="submit"
-              disabled={loading || !selectedStudentId || availableStudents.length === 0}
+              disabled={loading || selectedStudentIds.length === 0 || availableStudents.length === 0}
               className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
             >
               {loading ? (
@@ -161,7 +179,7 @@ const AddStudentToClassForm: React.FC<AddStudentToClassFormProps> = ({
               ) : (
                 <UserPlus className="h-4 w-4" />
               )}
-              <span>Sınıfa Ekle</span>
+              <span>Sınıfa Ekle {selectedStudentIds.length > 0 && `(${selectedStudentIds.length})`}</span>
             </button>
           </div>
         </form>

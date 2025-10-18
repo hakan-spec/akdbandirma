@@ -187,6 +187,24 @@ const ClassesPanel: React.FC<ClassesPanelProps> = ({ onBack, onViewClassDetails,
     }
   };
 
+  const handleAssignMultipleStudents = async (studentIds: string[], classId: string) => {
+    try {
+      setActionLoading(true);
+      for (const studentId of studentIds) {
+        await classService.assignStudentToClass(studentId, classId);
+      }
+      await loadData();
+      onStudentsUpdated();
+      setCurrentView('list');
+      setSelectedClass(null);
+    } catch (err) {
+      console.error('Error assigning students to class:', err);
+      setError('Öğrenciler sınıfa eklenirken hata oluştu.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const getStudentsInClass = (classId: string) => {
     return students.filter(student => student.classId === classId);
   };
@@ -237,7 +255,7 @@ const ClassesPanel: React.FC<ClassesPanelProps> = ({ onBack, onViewClassDetails,
       <AddStudentToClassForm
         class={selectedClass}
         availableStudents={getUnassignedStudents()}
-        onSubmit={(studentId) => handleAssignStudent(studentId, selectedClass.id)}
+        onSubmit={(studentIds) => handleAssignMultipleStudents(studentIds, selectedClass.id)}
         onCancel={() => {
           setCurrentView('list');
           setSelectedClass(null);
