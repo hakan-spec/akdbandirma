@@ -240,6 +240,36 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, onBack, onUpd
     }
   };
 
+  const handleCompleteFollowUp = async () => {
+    if (!customer.followUpDate) return;
+
+    try {
+      setActionLoading(true);
+      const { studentService } = await import('../services/studentService');
+      await studentService.completeFollowUp(customer.id);
+      await onRefresh();
+    } catch (err) {
+      console.error('Error completing follow-up:', err);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleUncompleteFollowUp = async () => {
+    if (!customer.followUpDate) return;
+
+    try {
+      setActionLoading(true);
+      const { studentService } = await import('../services/studentService');
+      await studentService.uncompleteFollowUp(customer.id);
+      await onRefresh();
+    } catch (err) {
+      console.error('Error uncompleting follow-up:', err);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('tr-TR', {
       year: 'numeric',
@@ -860,16 +890,62 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, onBack, onUpd
         <div className="bg-white shadow-sm rounded-lg p-6">
           {/* Follow-up */}
           {customer.followUpDate && (
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 max-w-md">
-              <div className="flex items-center space-x-2">
-                <Clock className="h-5 w-5 text-orange-600" />
-                <div>
-                  <p className="text-sm font-medium text-orange-900">Takip Tarihi</p>
-                  <p className="text-sm text-orange-700">
-                    {formatDate(customer.followUpDate)}
+            <div className={`border rounded-lg p-4 max-w-md ${
+              customer.followUpCompleted
+                ? 'bg-green-50 border-green-200'
+                : 'bg-orange-50 border-orange-200'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  {customer.followUpCompleted ? (
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                  ) : (
+                    <Clock className="h-5 w-5 text-orange-600" />
+                  )}
+                  <div>
+                    <p className={`text-sm font-medium ${
+                      customer.followUpCompleted ? 'text-green-900' : 'text-orange-900'
+                    }`}>
+                      {customer.followUpCompleted ? 'Takip Tamamlandı' : 'Takip Tarihi'}
+                    </p>
+                    <p className={`text-sm ${
+                      customer.followUpCompleted ? 'text-green-700' : 'text-orange-700'
+                    }`}>
+                      {formatDate(customer.followUpDate)}
+                    </p>
+                    {customer.followUpCompleted && customer.followUpCompletedAt && (
+                      <p className="text-xs text-green-600 mt-1">
+                        Tamamlanma: {formatDate(customer.followUpCompletedAt)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                {customer.followUpCompleted ? (
+                  <button
+                    onClick={handleUncompleteFollowUp}
+                    disabled={actionLoading}
+                    className="px-3 py-1.5 text-sm bg-white text-green-700 border border-green-300 rounded-md hover:bg-green-50 transition-colors disabled:opacity-50"
+                  >
+                    Geri Al
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleCompleteFollowUp}
+                    disabled={actionLoading}
+                    className="px-3 py-1.5 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center space-x-1"
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Tamamlandı</span>
+                  </button>
+                )}
+              </div>
+              {customer.followUpNotes && (
+                <div className="mt-3 pt-3 border-t border-green-200">
+                  <p className="text-xs text-green-700">
+                    <span className="font-medium">Not:</span> {customer.followUpNotes}
                   </p>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>

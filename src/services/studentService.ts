@@ -19,6 +19,9 @@ const transformStudentRow = (row: any): Customer => ({
   placementTestTeacher: row.placement_test_teacher || '',
   notes: row.notes || '',
   followUpDate: row.follow_up_date,
+  followUpCompleted: row.follow_up_completed || false,
+  followUpCompletedAt: row.follow_up_completed_at,
+  followUpNotes: row.follow_up_notes,
   lastContact: row.last_contact,
   createdAt: row.created_at,
   referralCode: row.referral_code,
@@ -817,5 +820,37 @@ export const studentService = {
   // Referans kodu ile öğrenci bul (public method)
   async findStudentByReferralCode(referralCode: string) {
     return findStudentByReferralCode(referralCode);
+  },
+
+  // Complete follow-up
+  async completeFollowUp(studentId: string): Promise<void> {
+    const { error } = await supabase
+      .from('students')
+      .update({
+        follow_up_completed: true,
+        follow_up_completed_at: new Date().toISOString()
+      })
+      .eq('id', studentId);
+
+    if (error) {
+      console.error('Error completing follow-up:', error);
+      throw error;
+    }
+  },
+
+  // Uncomplete follow-up
+  async uncompleteFollowUp(studentId: string): Promise<void> {
+    const { error } = await supabase
+      .from('students')
+      .update({
+        follow_up_completed: false,
+        follow_up_completed_at: null
+      })
+      .eq('id', studentId);
+
+    if (error) {
+      console.error('Error uncompleting follow-up:', error);
+      throw error;
+    }
   }
 };

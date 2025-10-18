@@ -63,6 +63,9 @@ export interface Customer {
   createdAt: string;
   lastContact?: string;
   followUpDate?: string;
+  followUpCompleted?: boolean;
+  followUpCompletedAt?: string;
+  followUpNotes?: string;
   referralCode?: string;
   referredByStudentId?: string;
   referralEarnings?: number;
