@@ -54,8 +54,21 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
   };
 
   const parseTimeToMinutes = (time: string): number => {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours * 60 + minutes;
+    try {
+      if (!time || typeof time !== 'string') {
+        console.error('Invalid time format:', time);
+        return 0;
+      }
+      const [hours, minutes] = time.split(':').map(Number);
+      if (isNaN(hours) || isNaN(minutes)) {
+        console.error('Time parsing resulted in NaN:', time);
+        return 0;
+      }
+      return hours * 60 + minutes;
+    } catch (err) {
+      console.error('Error parsing time:', time, err);
+      return 0;
+    }
   };
 
   const getStudentCountForClass = (classId: string): number => {
@@ -66,19 +79,27 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
     const items: ScheduleItem[] = [];
 
     classes.forEach(classItem => {
-      if (classItem.days && classItem.timeRange) {
-        const studentCount = getStudentCountForClass(classItem.id);
-        classItem.days.forEach(day => {
-          const timeRange = classItem.timeRange;
-          const startTime = timeRange.split('-')[0].trim();
-          items.push({
-            class: classItem,
-            day: day as DayOfWeek,
-            timeRange: timeRange,
-            startTime: parseTimeToMinutes(startTime),
-            studentCount: studentCount
+      try {
+        if (classItem.days && classItem.timeRange) {
+          const studentCount = getStudentCountForClass(classItem.id);
+          classItem.days.forEach(day => {
+            const timeRange = classItem.timeRange;
+            if (!timeRange || typeof timeRange !== 'string' || !timeRange.includes('-')) {
+              console.error('Invalid timeRange for class:', classItem.name, 'timeRange:', timeRange);
+              return;
+            }
+            const startTime = timeRange.split('-')[0].trim();
+            items.push({
+              class: classItem,
+              day: day as DayOfWeek,
+              timeRange: timeRange,
+              startTime: parseTimeToMinutes(startTime),
+              studentCount: studentCount
+            });
           });
-        });
+        }
+      } catch (err) {
+        console.error('Error processing class:', classItem.name, err);
       }
     });
 
@@ -105,10 +126,20 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
   const getTotalLessonsPerDay = (items: ScheduleItem[]): number => {
     let totalMinutes = 0;
     items.forEach(item => {
-      const [start, end] = item.timeRange.split('-').map(t => t.trim());
-      const startMin = parseTimeToMinutes(start);
-      const endMin = parseTimeToMinutes(end);
-      totalMinutes += (endMin - startMin);
+      try {
+        if (!item.timeRange || typeof item.timeRange !== 'string' || !item.timeRange.includes('-')) {
+          console.error('Invalid timeRange in getTotalLessonsPerDay:', item.timeRange);
+          return;
+        }
+        const [start, end] = item.timeRange.split('-').map(t => t.trim());
+        const startMin = parseTimeToMinutes(start);
+        const endMin = parseTimeToMinutes(end);
+        if (startMin > 0 && endMin > 0) {
+          totalMinutes += (endMin - startMin);
+        }
+      } catch (err) {
+        console.error('Error calculating lessons for item:', item, err);
+      }
     });
     return Math.round(totalMinutes / 40);
   };
@@ -123,6 +154,58 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           <span className="ml-3 text-gray-600">Yükleniyor...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white shadow-sm rounded-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={onBack}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+              <span>Öğretmenler</span>
+            </button>
+          </div>
+          <div className="text-center py-8">
+            <p className="text-red-600">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (classes.length === 0) {
+    return (
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white shadow-sm rounded-lg p-6">
+          <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={onBack}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+              <span>Öğretmenler</span>
+            </button>
+            <div className="flex items-center space-x-2">
+              <Calendar className="h-6 w-6 text-blue-600" />
+              <h1 className="text-xl font-semibold text-gray-900">
+                {teacher.name} - Ders Programı
+              </h1>
+            </div>
+          </div>
+          <div className="text-center py-12">
+            <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz Sınıf Yok</h3>
+            <p className="text-gray-500">
+              {teacher.name} için henüz bir sınıf oluşturulmamış.
+            </p>
+          </div>
         </div>
       </div>
     );
