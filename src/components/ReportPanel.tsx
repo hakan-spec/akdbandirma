@@ -25,6 +25,7 @@ interface ReportData {
   interviewsByDate: { [date: string]: number };
   interviewsByUser: { [userId: string]: number };
   enrolledStudentsByUser: { [userId: string]: number };
+  studentsByEducationLevel: { [level: string]: { [classLevel: string]: number } };
 }
 
 const ReportPanel: React.FC<ReportPanelProps> = ({ onBack, currentUserId, currentUserEmail }) => {
@@ -61,6 +62,9 @@ const ReportPanel: React.FC<ReportPanelProps> = ({ onBack, currentUserId, curren
       // Get financial data
       const financialData = await studentService.getFinancialReportData(startDateTime, endDateTime);
 
+      // Get all students to analyze by education level
+      const allStudents = await studentService.getAllStudents();
+
       // Calculate statistics
       const totalInterviews = interviews.length;
       const phoneInterviews = interviews.filter(i => i.type === 'telefon').length;
@@ -82,16 +86,29 @@ const ReportPanel: React.FC<ReportPanelProps> = ({ onBack, currentUserId, curren
       interviews.forEach(interview => {
         const date = new Date(interview.date).toLocaleDateString('tr-TR');
         interviewsByDate[date] = (interviewsByDate[date] || 0) + 1;
-        
+
         // Group by user
         const userId = interview.userId || 'unknown';
         interviewsByUser[userId] = (interviewsByUser[userId] || 0) + 1;
-        
+
         // Count enrolled students by user
-        if (interview.outcome && enrollmentKeywords.some(keyword => 
+        if (interview.outcome && enrollmentKeywords.some(keyword =>
           interview.outcome.toLowerCase().includes(keyword.toLowerCase())
         )) {
           enrolledStudentsByUser[userId] = (enrolledStudentsByUser[userId] || 0) + 1;
+        }
+      });
+
+      // Group students by education level and placement test level
+      const studentsByEducationLevel: { [level: string]: { [classLevel: string]: number } } = {};
+      allStudents.forEach(student => {
+        if (student.educationLevel && student.placementTestLevel) {
+          if (!studentsByEducationLevel[student.educationLevel]) {
+            studentsByEducationLevel[student.educationLevel] = {};
+          }
+          const level = student.placementTestLevel;
+          studentsByEducationLevel[student.educationLevel][level] =
+            (studentsByEducationLevel[student.educationLevel][level] || 0) + 1;
         }
       });
 
@@ -105,7 +122,8 @@ const ReportPanel: React.FC<ReportPanelProps> = ({ onBack, currentUserId, curren
         referredStudentsCount: referredStudents.length,
         interviewsByDate,
         interviewsByUser,
-        enrolledStudentsByUser
+        enrolledStudentsByUser,
+        studentsByEducationLevel
       });
     } catch (err) {
       console.error('Error generating report:', err);
@@ -549,6 +567,50 @@ const ReportPanel: React.FC<ReportPanelProps> = ({ onBack, currentUserId, curren
               </div>
             </div>
           )}
+
+          {/* Students by Education Level and Class Level */}
+          {Object.keys(reportData.studentsByEducationLevel).length > 0 && (
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Eğitim Seviyelerine Göre Öğrenci Dağılımı</h3>
+              <div className="space-y-6">
+                {Object.entries(reportData.studentsByEducationLevel)
+                  .sort(([a], [b]) => {
+                    const order = ['İlköğretim', 'Ortaöğretim', 'Lise', 'Üniversite', 'Yetişkin'];
+                    return order.indexOf(a) - order.indexOf(b);
+                  })
+                  .map(([educationLevel, levels]) => {
+                    const totalInLevel = Object.values(levels).reduce((sum, count) => sum + count, 0);
+                    return (
+                      <div key={educationLevel} className="border-b border-gray-200 last:border-b-0 pb-4 last:pb-0">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-semibold text-gray-900">{educationLevel}</h4>
+                          <span className="text-sm font-medium text-gray-600">{totalInLevel} öğrenci</span>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {Object.entries(levels)
+                            .sort(([a], [b]) => a.localeCompare(b))
+                            .map(([level, count]) => (
+                              <div key={level} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                                <p className="text-xs text-gray-600 mb-1">{level}</p>
+                                <p className="text-lg font-bold text-gray-900">{count}</p>
+                                <div className="mt-1 w-full bg-gray-200 rounded-full h-1.5">
+                                  <div
+                                    className="bg-blue-600 h-1.5 rounded-full"
+                                    style={{
+                                      width: `${Math.max((count / totalInLevel) * 100, 5)}%`
+                                    }}
+                                  ></div>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+
           {/* No Data Message */}
           {reportData.totalInterviews === 0 && (
             <div className="bg-white rounded-lg shadow-sm p-12 text-center">
