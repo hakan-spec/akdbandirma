@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import { Teacher } from '../services/teacherService';
 import { Class } from '../types/Class';
+import { Customer } from '../types/Customer';
 import { classService } from '../services/classService';
+import { studentService } from '../services/studentService';
 
 interface TeacherScheduleViewProps {
   teacher: Teacher;
@@ -18,10 +20,12 @@ interface ScheduleItem {
   day: DayOfWeek;
   timeRange: string;
   startTime: number;
+  studentCount: number;
 }
 
 const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBack }) => {
   const [classes, setClasses] = useState<Class[]>([]);
+  const [students, setStudents] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'weekly' | 'daily'>('weekly');
@@ -34,9 +38,13 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
     try {
       setLoading(true);
       setError(null);
-      const allClasses = await classService.getAllClasses();
+      const [allClasses, allStudents] = await Promise.all([
+        classService.getAllClasses(),
+        studentService.getAllStudents()
+      ]);
       const teacherClasses = allClasses.filter(c => c.teacherId === teacher.id);
       setClasses(teacherClasses);
+      setStudents(allStudents);
     } catch (err) {
       console.error('Error loading teacher classes:', err);
       setError('Dersler yüklenirken hata oluştu.');
@@ -50,11 +58,16 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
     return hours * 60 + minutes;
   };
 
+  const getStudentCountForClass = (classId: string): number => {
+    return students.filter(s => s.classId === classId).length;
+  };
+
   const getScheduleItems = (): ScheduleItem[] => {
     const items: ScheduleItem[] = [];
 
     classes.forEach(classItem => {
       if (classItem.days && classItem.timeRange) {
+        const studentCount = getStudentCountForClass(classItem.id);
         classItem.days.forEach(day => {
           const timeRange = classItem.timeRange;
           const startTime = timeRange.split('-')[0].trim();
@@ -62,7 +75,8 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
             class: classItem,
             day: day as DayOfWeek,
             timeRange: timeRange,
-            startTime: parseTimeToMinutes(startTime)
+            startTime: parseTimeToMinutes(startTime),
+            studentCount: studentCount
           });
         });
       }
@@ -264,7 +278,7 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
                                   </div>
                                   <div className="text-right">
                                     <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                      {item.class.studentIds.length} öğrenci
+                                      {item.studentCount} öğrenci
                                     </span>
                                   </div>
                                 </div>
@@ -312,7 +326,7 @@ const TeacherScheduleView: React.FC<TeacherScheduleViewProps> = ({ teacher, onBa
                               {item.class.level}
                             </span>
                             <span className="text-xs text-gray-600">
-                              {item.class.studentIds.length} öğrenci
+                              {item.studentCount} öğrenci
                             </span>
                           </div>
                         </div>
